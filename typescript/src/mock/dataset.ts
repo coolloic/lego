@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from '../interfaces/repository';
-import { ColorRecord } from '../interfaces/color';
+import { COLOR_PK, ColorRecord } from '../interfaces/color';
 import { Brick, BrickRecord } from '../interfaces/brick';
 import { MasterDataRecord } from '../interfaces/masterData';
 import { EStatus } from '../interfaces/status';
@@ -70,7 +70,7 @@ export const generateBrickRecord = (
   for (let i = 0; i < amount; i++) {
     brickRecord[i] = {
       id: i,
-      color: colors[randomNumber(length)],
+      color: colors[randomNumber(length)][COLOR_PK],
     };
   }
   return brickRecord;
@@ -82,7 +82,9 @@ export const randomBricks = (
 ): Brick[] => {
   const bricks: Brick[] = [];
   const maxIndex = len(brickRecord);
-  for (let i = 0; i < amount; i++) {
+  const num = randomNumber(amount);
+  const length = num > 0 ? num : 1;
+  for (let i = 0; i < length; i++) {
     bricks.push(brickRecord[randomNumber(maxIndex)]);
   }
   return bricks;
@@ -113,16 +115,26 @@ export interface GenerationConfiguration {
   colorAmount?: number;
   maxBricksPerItem?: number;
   maxPricePerItem?: number;
+  givenBrickAmount?: number;
 }
 
-export const generateMasterData = ({
+export enum DataSetType {
+  ITEM,
+  MASTER_DATA,
+  GIVEN_BRICKS,
+}
+
+export type DataSetRecord = Record<DataSetType, any>;
+
+export const generateDataSet = ({
+  givenBrickAmount = 10,
   itemAmount = 20,
   brickAmount = 40,
   colorAmount = 60,
   maxBricksPerItem = 10,
   maxPricePerItem = 500,
-}: GenerationConfiguration): MasterDataRecord => {
-  const itemRecord = generateItemRecord(
+}: GenerationConfiguration): DataSetRecord => {
+  const itemRecord: ItemRecord = generateItemRecord(
     itemAmount,
     brickAmount,
     colorAmount,
@@ -135,8 +147,18 @@ export const generateMasterData = ({
       uuid: i,
       price: randomNumber(maxPricePerItem),
       status: randomEStatus(),
-      item: itemRecord[randomNumber(length)],
+      item_id: itemRecord[randomNumber(length)].uuid,
     };
   }
-  return masterDataRecord;
+  const givenBricksIds: number[] = [];
+  for (let i = 0; i < givenBrickAmount; i++) {
+    givenBricksIds.push(itemRecord[randomNumber(length)].uuid);
+  }
+  return {
+    [DataSetType.GIVEN_BRICKS]: givenBricksIds,
+    [DataSetType.ITEM]: Object.values(itemRecord),
+    [DataSetType.MASTER_DATA]: Object.values(masterDataRecord),
+  };
 };
+
+export const dataSets = generateDataSet({});

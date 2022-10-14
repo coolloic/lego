@@ -1,8 +1,6 @@
-import { Color } from './color';
-
 export interface Brick {
   id: number;
-  color: Color;
+  color: string;
 }
 
 export type BrickRecord = Record<number, Brick>;

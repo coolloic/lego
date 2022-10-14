@@ -1,27 +1,21 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { AppService } from './app.service';
-import { Color, ColorRecord } from './interfaces/color';
-import { RepositoryService } from './services/repositoryService';
+import { Controller, Get, Query } from '@nestjs/common';
+import {
+  DataCollection,
+  PreferredItemService,
+} from './services/preferredItem.service';
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly repositoryService: RepositoryService,
-    private readonly appService: AppService,
-  ) {}
+  constructor(private readonly preferredItemService: PreferredItemService) {}
 
-  @Get('hello')
-  getHello(): string {
-    return this.appService.getHello();
-  }
-
-  @Post('color')
-  async addColor(@Body() color: Color): Promise<ColorRecord> {
-    return this.repositoryService.putColor(color);
-  }
-
-  @Get('color')
-  listColors(): ColorRecord {
-    return this.repositoryService.listColor();
+  @Get('collection')
+  listColors(
+    @Query('item_amount') itemAmount: number,
+    @Query('given_bricks_amount') givenBricksAmount: number,
+  ): DataCollection {
+    return this.preferredItemService.getDataCollection(
+      itemAmount,
+      givenBricksAmount,
+    );
   }
 }

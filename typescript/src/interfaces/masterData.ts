@@ -1,11 +1,10 @@
 import { EStatus } from './status';
-import { Item } from './item';
 
 export interface MasterData {
   uuid: number;
   status: EStatus;
   price: number;
-  item: Item;
+  item_id: number;
 }
 
 export type MasterDataRecord = Record<string, MasterData>;
