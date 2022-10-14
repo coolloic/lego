@@ -17,12 +17,12 @@ const binaryMimeTypes: string[] = [];
 
 let cachedServer: Server;
 
-process.on('unhandledRejection', (reason) => {
+process.on('unhandledRejection', reason => {
   // tslint:disable-next-line:no-console
   console.error(reason);
 });
 
-process.on('uncaughtException', (reason) => {
+process.on('uncaughtException', reason => {
   // tslint:disable-next-line:no-console
   console.error(reason);
 });
@@ -31,13 +31,15 @@ async function bootstrapServer(): Promise<Server> {
   if (!cachedServer) {
     try {
       const expressApp = express();
-      const nestApp = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
+      const nestApp = await NestFactory.create(
+        AppModule,
+        new ExpressAdapter(expressApp),
+      );
       nestApp.enableCors();
       nestApp.use(eventContext());
       await nestApp.init();
       cachedServer = createServer(expressApp, undefined, binaryMimeTypes);
-    }
-    catch (error) {
+    } catch (error) {
       return Promise.reject(error);
     }
   }
@@ -47,4 +49,4 @@ async function bootstrapServer(): Promise<Server> {
 export const handler: Handler = async (event: any, context: Context) => {
   cachedServer = await bootstrapServer();
   return proxy(cachedServer, event, context, 'PROMISE').promise;
-}
+};
