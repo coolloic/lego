@@ -4,10 +4,7 @@ import {
   generateItemRecord,
   generateDataSet,
   len,
-  randomBricks,
 } from './dataset';
-import { LogService } from '../services/log.service';
-import { Brick } from '../interfaces/brick';
 
 describe('dataset', () => {
   describe('generateColorRecord', () => {
