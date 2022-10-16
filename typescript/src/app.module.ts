@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
+import { AppController } from './controllers/app.controller';
 import { RepositoryService } from './services/repositoryService';
 import { BasicRepository } from './models/basicRepository';
 import { MasterDataService } from './services/master-data.service';

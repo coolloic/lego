@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { Item } from '../interfaces/item';
+import { PreferredItemRequest } from '../interfaces/item';
 import { ItemService } from './item.service';
 import { MasterDataService } from './master-data.service';
-import { MasterData } from '../interfaces/masterData';
-import { dataSets, DataSetType, generateDataSet } from '../mock/dataset';
+import {
+  dataSets,
+  DataSetType,
+  generateDataSet,
+  GenerationConfiguration,
+} from '../mock/dataset';
+import { findOutPreferredItems } from '../helpers/services.utils';
 
 @Injectable()
 export class PreferredItemService {
@@ -12,28 +17,17 @@ export class PreferredItemService {
     private readonly masterDataService: MasterDataService,
   ) {}
 
-  cherryPickItems(brickIds: number[]): Item[] {
-    return [];
+  lookupPreferredItems(config: GenerationConfiguration): any {
+    return findOutPreferredItems(this.getDataCollection(config));
   }
 
-  getDataCollection(
-    givenBrickAmount?: number,
-    itemAmount?: number,
-  ): DataCollection {
+  getDataCollection(config: GenerationConfiguration): PreferredItemRequest {
     const dateSetRecord =
-      itemAmount > 0
-        ? generateDataSet({ itemAmount, givenBrickAmount })
-        : dataSets;
+      config?.itemAmount > 0 ? generateDataSet(config) : dataSets;
     return {
       brickIds: dateSetRecord[DataSetType.GIVEN_BRICKS],
       itemCollection: this.itemService.list(dateSetRecord),
       masterDataCollection: this.masterDataService.list(dateSetRecord),
     };
   }
-}
-
-export interface DataCollection {
-  brickIds: number[];
-  itemCollection: Item[];
-  masterDataCollection: MasterData[];
 }

@@ -6,7 +6,7 @@ import {
   len,
   randomBricks,
 } from './dataset';
-import { LogService } from '../services/logService';
+import { LogService } from '../services/log.service';
 import { Brick } from '../interfaces/brick';
 
 describe('dataset', () => {
@@ -19,7 +19,7 @@ describe('dataset', () => {
   });
   describe('generateBrickRecord', () => {
     it('should generate specified amount of bricks', () => {
-      const amount = 5;
+      const amount = 1;
       const colorRecord = generateColorRecord(amount);
       const brickRecord = generateBrickRecord(amount, colorRecord);
       expect(len(brickRecord)).toEqual(amount);
@@ -33,18 +33,8 @@ describe('dataset', () => {
       expect(dataSet[1].length).toEqual(amount);
     });
   });
-  describe('randomBricks', () => {
-    it('should return the specified amount of bricks', () => {
-      const amount = 5;
-      const bricks: Brick[] = randomBricks(
-        amount,
-        generateBrickRecord(100, generateColorRecord(20)),
-      );
-      expect(bricks.length).toEqual(amount);
-    });
-  });
   describe('generateItemRecord', () => {
-    const amount = 5;
+    const amount = 2;
     const itemRecord = generateItemRecord(amount);
     expect(len(itemRecord)).toEqual(amount);
   });

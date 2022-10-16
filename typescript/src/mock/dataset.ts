@@ -32,6 +32,9 @@ export class DataSet<T, R> implements Repository<T, R> {
 
 export const len = (record: {}): number => Object.keys(record).length;
 const randomNumber = (max: number) => Math.floor(Math.random() * max);
+const randomPrice = (max: number, decimals: number = 2) =>
+  Math.floor(Math.random() * max * Math.pow(10, decimals)) /
+  Math.pow(10, decimals);
 
 const randomColorCode = (range: number): string =>
   `${randomNumber(range)},${randomNumber(range)}`;
@@ -62,7 +65,7 @@ const randomEStatus = (): EStatus => {
 
 export const generateBrickRecord = (
   amount: number,
-  colorRecord: ColorRecord,
+  colorRecord: ColorRecord = generateColorRecord(10),
 ): BrickRecord => {
   const brickRecord: BrickRecord = {};
   const length = len(colorRecord);
@@ -95,7 +98,7 @@ export const generateItemRecord = (
   brickAmount: number = 40,
   colorAmount: number = 60,
   maxBricksPerItem: number = 10,
-): ItemRecord => {
+): [ItemRecord, BrickRecord] => {
   const itemRecord: ItemRecord = {};
   const colorRecord = generateColorRecord(colorAmount);
   const brickRecord = generateBrickRecord(brickAmount, colorRecord);
@@ -106,7 +109,7 @@ export const generateItemRecord = (
       bricks: randomBricks(maxBricksPerItem, brickRecord),
     };
   }
-  return itemRecord;
+  return [itemRecord, brickRecord];
 };
 
 export interface GenerationConfiguration {
@@ -131,28 +134,27 @@ export const generateDataSet = ({
   itemAmount = 20,
   brickAmount = 40,
   colorAmount = 60,
-  maxBricksPerItem = 10,
+  maxBricksPerItem = 3,
   maxPricePerItem = 500,
 }: GenerationConfiguration): DataSetRecord => {
-  const itemRecord: ItemRecord = generateItemRecord(
+  const [itemRecord, brickRecord] = generateItemRecord(
     itemAmount,
     brickAmount,
     colorAmount,
     maxBricksPerItem,
   );
   const masterDataRecord: MasterDataRecord = {};
-  const length = len(itemRecord);
   for (let i = 0; i < itemAmount; i++) {
     masterDataRecord[i + 1] = {
       uuid: i,
-      price: randomNumber(maxPricePerItem),
+      price: randomPrice(maxPricePerItem),
       status: randomEStatus(),
-      item_id: itemRecord[randomNumber(length)].uuid,
+      item_id: itemRecord[i].uuid,
     };
   }
   const givenBricksIds: number[] = [];
   for (let i = 0; i < givenBrickAmount; i++) {
-    givenBricksIds.push(itemRecord[randomNumber(length)].uuid);
+    givenBricksIds.push(brickRecord[randomNumber(len(brickRecord))].id);
   }
   return {
     [DataSetType.GIVEN_BRICKS]: givenBricksIds,
