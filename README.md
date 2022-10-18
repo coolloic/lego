@@ -40,3 +40,6 @@ Normally, I would like to group the bricks, find out the matched item with thoes
 
 To figure out the best purchase streategy of preferred item, further enhancement can be made for the step 5. The idea is to find all the possible combinations, work out the price in total and amount of different kind of stauts, and then apply the purchase streategy based on the total price and status.
 
+## Creative thinking
+
+As a customer, I would like to get perferred items by giving a photo or picture of bricks. Machine Learning can be brought in to identify the bricks in the picture and use similarity search to find out the preferred items, or feed the perferred item service to populate the preferred items.
