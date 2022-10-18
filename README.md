@@ -35,3 +35,8 @@ Normally, I would like to group the bricks, find out the matched item with thoes
 
 ## Draft to design
 ![Alt Diagram](https://github.com/coolloic/lego/blob/master/lego.drawio.png "Diagram")
+
+## Improvement
+
+To figure out the best purchase streategy of preferred item, further enhancement can be made for the step 5. The idea is to find all the possible combinations, work out the price in total and amount of different kind of stauts, and then apply the purchase streategy based on the total price and status.
+
