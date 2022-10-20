@@ -6,7 +6,7 @@
 
 ## Run the service locally
 - `npm install`
-- `npm run local`
+- `npm run start`
 - `curl http://localhost:3000/dev/preferredItems?itemAmount=1&brickAmount&colorAmount&maxBricksPerItem&maxPricePerItem&givenBrickAmount`
 
 1. `itemAmount` - generate amount of `Item` and `MasterData`
